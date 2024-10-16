@@ -138,7 +138,7 @@ impl PoolHandle {
                 let h = thread::spawn(move || {
                     loop {
                         // Run memento
-                        let mh = thread::spawn(move || {
+                        let mh = std::thread::spawn(move || {
                             let is_clearing = unsafe { *(m_is_clearing as *mut bool) };
                             if is_clearing {
                                 self.clear_mmt(tid)

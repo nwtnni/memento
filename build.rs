@@ -1,10 +1,20 @@
+use std::path::PathBuf;
 use std::process::Command;
 
 fn build_ralloc() {
+    let ralloc = std::env::var("CARGO_MANIFEST_DIR")
+        .map(PathBuf::from)
+        .expect("Expected cargo to pass CARGO_MANIFEST_DIR")
+        .join("ext/ralloc/test");
+
+    let ralloc = ralloc
+        .canonicalize()
+        .unwrap_or_else(|_| panic!("Failed to find {ralloc:?}"));
+
     // Build Ralloc
     Command::new("make")
         .args(["clean"])
-        .current_dir("./ext/ralloc/test")
+        .current_dir(&ralloc)
         .status()
         .expect("failed to make clean!");
     let args = {
@@ -19,13 +29,13 @@ fn build_ralloc() {
     };
     Command::new("make")
         .args(args)
-        .current_dir("./ext/ralloc/test")
+        .current_dir(&ralloc)
         .status()
         .expect("failed to make!");
 
     // Link libralloc.a
-    println!("cargo:rustc-link-search=ext/ralloc/test");
-    println!("cargo:rustc-link-lib=dylib=stdc++");
+    println!("cargo:rustc-link-search={}", ralloc.display());
+    println!("cargo:rustc-link-lib=ralloc");
 }
 
 fn main() {

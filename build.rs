@@ -1,22 +1,5 @@
 use std::process::Command;
 
-fn build_pmdk() {
-    Command::new("git")
-        .args(["submodule", "update", "--init", "--recursive"])
-        .current_dir("./")
-        .status()
-        .expect("failed to submodule update!");
-
-    Command::new("git")
-        .args(["apply", "../pmdk-rs.patch"])
-        .current_dir("./ext/pmdk-rs")
-        .status()
-        .expect("failed to submodule update!");
-
-    println!("cargo:rustc-link-lib=pmemobj");
-
-}
-
 fn build_ralloc() {
     // Build Ralloc
     Command::new("make")
@@ -47,5 +30,4 @@ fn build_ralloc() {
 
 fn main() {
     build_ralloc();
-    build_pmdk();
 }

@@ -1,3 +1,0 @@
-[submodule "ext/pmdk-rs"]
-	path = ext/pmdk-rs
-	url = https://github.com/rleungx/pmdk-rs.git

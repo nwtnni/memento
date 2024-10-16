@@ -20,8 +20,9 @@ use super::{global_pool, Pool, PoolHandle};
 
 #[cfg(not(feature = "pmdk"))]
 mod ralloc;
+#[allow(missing_docs)]
 #[cfg(not(feature = "pmdk"))]
-pub(crate) type PMEMAllocator = ralloc::RallocAllocator;
+pub type PMEMAllocator = ralloc::RallocAllocator;
 
 #[cfg(feature = "pmdk")]
 mod pmdk;
@@ -40,6 +41,7 @@ pub trait PAllocator {
     unsafe fn mmapped_addr() -> usize;
     unsafe fn close(start: usize, len: usize);
     unsafe fn recover() -> c_int;
+    unsafe fn measure() -> usize;
 
     /// Root management
     unsafe fn set_root(ptr: *mut c_void, i: u64) -> *mut c_void;

@@ -451,6 +451,7 @@ private:
     // func on cache
     void fill_cache(size_t sc_idx, TCacheBin* cache);
 public:
+    size_t measure_cache(size_t sc_idx, TCacheBin* cache);
     // we need to call this function to flush TLS cache during exit
     void flush_cache(size_t sc_idx, TCacheBin* cache);
     // find desc of the block

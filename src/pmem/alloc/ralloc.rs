@@ -23,6 +23,8 @@ extern "C" {
     /// If return is 1, the original file is opened, otherwise the file is newly created.
     pub(crate) fn RP_init(_id: *const c_char, size: u64) -> c_int;
 
+    pub(crate) fn RP_measure() -> usize;
+
     /// If the return is 1, it means that it is dirty, so it is garbage-collected, otherwise, it is not dirty, not garbage-collected.
     pub(crate) fn RP_recover() -> c_int;
 
@@ -95,7 +97,8 @@ extern "C" {
     );
 }
 
-pub(crate) struct RallocAllocator {}
+#[derive(Debug)]
+pub struct RallocAllocator {}
 
 impl PAllocator for RallocAllocator {
     unsafe fn open(filepath: *const libc::c_char, filesize: u64) -> libc::c_int {
@@ -112,6 +115,10 @@ impl PAllocator for RallocAllocator {
 
     unsafe fn close(start: usize, len: usize) {
         RP_close();
+    }
+
+    unsafe fn measure() -> usize {
+        RP_measure()
     }
 
     unsafe fn recover() -> libc::c_int {

@@ -25,6 +25,10 @@ extern "C" {
 
     pub(crate) fn RP_measure() -> usize;
 
+    pub(crate) fn RP_gc();
+
+    pub(crate) fn RP_invalidate();
+
     /// If the return is 1, it means that it is dirty, so it is garbage-collected, otherwise, it is not dirty, not garbage-collected.
     pub(crate) fn RP_recover() -> c_int;
 
@@ -171,5 +175,15 @@ impl PAllocator for RallocAllocator {
         let pool = global_pool().unwrap();
         // let s = (ptr as *mut _ as *mut T).as_mut().unwrap();
         T::filter(ptr.as_mut().unwrap(), tid, gc, pool);
+    }
+
+    unsafe fn init_thread(_: usize) {}
+
+    unsafe fn gc() {
+        RP_gc();
+    }
+
+    unsafe fn invalidate() {
+        RP_invalidate();
     }
 }

@@ -16,6 +16,7 @@
 #include "BaseMeta.hpp"
 #include "RegionManager.hpp"
 #include "SizeClass.hpp"
+#include "TCache.hpp"
 #include "pm_config.hpp"
 
 using namespace std;
@@ -107,6 +108,10 @@ size_t RP_measure() {
 
 void RP_gc() {
     base_md->gc();
+}
+
+void RP_invalidate() {
+    t_caches = TCaches();
 }
 
 int RP_recover() { return (int)base_md->restart(); }

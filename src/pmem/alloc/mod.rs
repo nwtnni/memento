@@ -18,11 +18,19 @@ use std::{
 
 use super::{global_pool, Pool, PoolHandle};
 
-#[cfg(not(feature = "pmdk"))]
+#[allow(unreachable_pub)]
 mod ralloc;
+
 #[allow(missing_docs)]
-#[cfg(not(feature = "pmdk"))]
+#[cfg(not(any(feature = "pmdk", feature = "cxlalloc")))]
 pub type PMEMAllocator = ralloc::RallocAllocator;
+
+#[allow(unreachable_pub)]
+mod cxlalloc;
+
+#[allow(missing_docs)]
+#[cfg(feature = "cxlalloc")]
+pub type PMEMAllocator = cxlalloc::Cxlalloc;
 
 #[cfg(feature = "pmdk")]
 mod pmdk;
@@ -42,6 +50,9 @@ pub trait PAllocator {
     unsafe fn close(start: usize, len: usize);
     unsafe fn recover() -> c_int;
     unsafe fn measure() -> usize;
+    unsafe fn gc();
+    unsafe fn invalidate();
+    unsafe fn init_thread(tid: usize);
 
     /// Root management
     unsafe fn set_root(ptr: *mut c_void, i: u64) -> *mut c_void;

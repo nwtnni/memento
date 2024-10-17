@@ -180,6 +180,10 @@ impl PoolHandle {
         #[cfg(feature = "tcrash")]
         let _a = self.alloc::<usize>();
 
+        unsafe {
+            PMEMAllocator::init_thread(tid);
+        }
+
         BARRIER_WAIT[tid].store(true, Ordering::SeqCst);
         for other in 1..=nr_memento {
             while !BARRIER_WAIT[other].load(Ordering::SeqCst) {

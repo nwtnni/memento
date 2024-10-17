@@ -35,6 +35,7 @@ int RP_init(const char *_id, uint64_t size);
 
 size_t RP_measure();
 void RP_gc();
+void RP_invalidate();
 
 /* return 1 if it's dirty, otherwise 0. */
 int RP_recover();

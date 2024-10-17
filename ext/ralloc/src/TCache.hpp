@@ -69,7 +69,7 @@ struct TCaches
 	TCacheBin t_cache[MAX_SZ_IDX];
 	TCaches():t_cache(){};
 	~TCaches(){
-		ralloc::public_flush_cache();
+		// ralloc::public_flush_cache();
 	}
 };
 

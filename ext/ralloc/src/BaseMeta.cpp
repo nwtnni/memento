@@ -765,16 +765,16 @@ void GarbageCollection::operator()() {
   printf("Start garbage collection...\n");
   auto start = high_resolution_clock::now();
   // Step 0: initialize all transient data
-  printf("Initializing all transient data...");
+  // printf("Initializing all transient data...");
   base_md->avail_sb.off.store(nullptr); // initialize avail_sb
   for (int i = 0; i < MAX_SZ_IDX; i++) {
     // initialize partial list of each heap
     base_md->heaps[i].partial_list.off.store(nullptr);
   }
-  printf("Initialized!\n");
+  // printf("Initialized!\n");
 
   // Step 1: mark all accessible blocks from roots
-  printf("Marking reachable nodes...");
+  // printf("Marking reachable nodes...\n");
 
   // First mark all root nodes
   for (int i = 0; i < MAX_ROOTS; i++) {
@@ -790,10 +790,10 @@ void GarbageCollection::operator()() {
     to_filter_func.pop();
     func(node.first, node.second, *this);
   }
-  printf("Done!\nReachable blocks = %lu\n", marked_blk.size());
+  // printf("Done!\nReachable blocks = %lu\n", marked_blk.size());
 
   // Step 2: sweep phase, update variables.
-  printf("Reconstructing metadata...");
+  // printf("Reconstructing metadata...");
   char *curr_sb = _rgs->translate(
       SB_IDX, reinterpret_cast<char *>(SBSIZE)); // starting from first sb
   Descriptor *curr_desc = base_md->desc_lookup(curr_sb);
@@ -908,13 +908,13 @@ void GarbageCollection::operator()() {
   // store head of new free sb list into base_md
   ptr_cnt<Descriptor> tmp_avail_sb(avail_sb, 0);
   base_md->avail_sb.store(tmp_avail_sb);
-  printf("Reconstructed! \n");
+  // printf("Reconstructed! \n");
   auto stop = high_resolution_clock::now();
   assert(curr_marked_blk == marked_blk.end());
-  auto duration = duration_cast<milliseconds>(stop - start);
-  cout << "Time elapsed = " << duration.count() << " ms on GC." << endl;
+  auto duration = duration_cast<microseconds>(stop - start);
+  cout << duration.count() << endl;
 
-  printf("Flushing recovered data...");
+  // printf("Flushing recovered data...");
   _rgs->flush_region(DESC_IDX);
   _rgs->flush_region(SB_IDX);
   char *addr_to_flush = reinterpret_cast<char *>(base_md);
@@ -924,7 +924,7 @@ void GarbageCollection::operator()() {
     FLUSH(addr_to_flush);
   }
   FLUSHFENCE;
-  printf("Garbage collection Completed!\n");
+  // printf("Garbage collection Completed!\n");
 }
 
 void GarbageCollection::mark_func_c(char *ptr, size_t tid,

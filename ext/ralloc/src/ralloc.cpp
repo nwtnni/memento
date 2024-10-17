@@ -105,6 +105,10 @@ size_t RP_measure() {
   return total;
 }
 
+void RP_gc() {
+    base_md->gc();
+}
+
 int RP_recover() { return (int)base_md->restart(); }
 
 void RP_close() { delete _holder; }

@@ -401,10 +401,12 @@ public:
         //this is sequential
         // assert(i<MAX_ROOTS && roots[i]!=nullptr); // we allow roots[i] to be null
         assert(i<MAX_ROOTS);
+        if (ralloc::roots_filter_func[i] == nullptr) {
         ralloc::roots_filter_func[i] = [](const CrossPtr<char, SB_IDX>& cptr, size_t, GarbageCollection& gc){
             // this new statement is intentionally designed to use transient allocator since it's offline
             gc.mark_func(static_cast<T*>(cptr), 0);
         };
+        }
         return static_cast<T*>(roots[i]);
     }
     bool restart(){
@@ -420,6 +422,10 @@ public:
         // writeback() is called so that crash will result in a true dirty.
         set_dirty();
         return ret;
+    }
+    void gc() {
+        GarbageCollection collect;
+        collect();
     }
     void writeback(){
         // Give back tcached blocks *Wentao: no actually ~TCache will do this*

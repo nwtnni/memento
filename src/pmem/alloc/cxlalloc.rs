@@ -18,7 +18,6 @@ pub struct Cxlalloc {}
 
 impl PAllocator for Cxlalloc {
     unsafe fn open(filepath: *const libc::c_char, filesize: u64) -> libc::c_int {
-        cxlalloc_static::cxlalloc_init_backend(b"shm\0".as_ptr().cast(), false);
         cxlalloc_static::cxlalloc_init(filepath, filesize as usize, 0, 64, 0, 1);
         (!cxlalloc_static::cxlalloc_is_clean()) as libc::c_int
     }

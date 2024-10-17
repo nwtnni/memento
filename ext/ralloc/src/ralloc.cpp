@@ -106,13 +106,9 @@ size_t RP_measure() {
   return total;
 }
 
-void RP_gc() {
-    base_md->gc();
-}
+void RP_gc() { base_md->gc(); }
 
-void RP_invalidate() {
-    t_caches = TCaches();
-}
+void RP_invalidate() { t_caches = TCaches(); }
 
 int RP_recover() { return (int)base_md->restart(); }
 

@@ -20,7 +20,7 @@ RALLOC_FLAGS = $(FLAGS) -DRALLOC -L.
 MAKALU_FLAGS = $(FLAGS) -I../ext/makalu_alloc/include -DMAKALU -L../ext/makalu_alloc/lib -lmakalu
 PMDK_FLAGS = $(FLAGS) -DPMDK -lpmemobj
 
-R_CXXFLAGS = $(RALLOC_FLAGS) -ljemalloc -L. -lralloc
+R_CXXFLAGS = $(RALLOC_FLAGS) -ljemalloc -L. -lralloc -lnuma
 MAK_CXXFLAGS = $(MAKALU_FLAGS) -ljemalloc
 JE_CXXFLAGS = $(FLAGS) -ljemalloc
 LR_CXXFLAGS = $(FLAGS) -L../ext/lrmalloc -l:lrmalloc.a -ldl# for built-in malloc

@@ -762,7 +762,7 @@ void ralloc::public_flush_cache() {
  *  segment exists.
  */
 void GarbageCollection::operator()() {
-  printf("Start garbage collection...\n");
+  // printf("Start garbage collection...\n");
   auto start = high_resolution_clock::now();
   // Step 0: initialize all transient data
   // printf("Initializing all transient data...");
@@ -791,6 +791,7 @@ void GarbageCollection::operator()() {
     func(node.first, node.second, *this);
   }
   // printf("Done!\nReachable blocks = %lu\n", marked_blk.size());
+  printf("GC_COUNT:%lu\n", marked_blk.size());
 
   // Step 2: sweep phase, update variables.
   // printf("Reconstructing metadata...");
@@ -912,7 +913,7 @@ void GarbageCollection::operator()() {
   auto stop = high_resolution_clock::now();
   assert(curr_marked_blk == marked_blk.end());
   auto duration = duration_cast<microseconds>(stop - start);
-  cout << duration.count() << endl;
+  cout << "GC_TIME:" << duration.count() << endl;
 
   // printf("Flushing recovered data...");
   _rgs->flush_region(DESC_IDX);

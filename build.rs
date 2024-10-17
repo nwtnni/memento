@@ -36,6 +36,7 @@ fn build_ralloc() {
     // Link libralloc.a
     println!("cargo:rustc-link-search={}", ralloc.display());
     println!("cargo:rustc-link-lib=ralloc");
+    println!("cargo:rustc-link-lib=numa");
 }
 
 fn main() {

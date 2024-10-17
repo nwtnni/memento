@@ -361,6 +361,23 @@ impl Pool {
                 );
             }
 
+            // Initialize filter functions
+            PMEMAllocator::set_root_filter::<O>(RootIdx::RootObj as u64);
+            let _ = PMEMAllocator::get_root(RootIdx::CASHelpArr as u64);
+            let _ = PMEMAllocator::get_root(RootIdx::CASHelpDescArr as u64);
+
+            let nr_memento = *(PMEMAllocator::get_root(RootIdx::NrMemento as u64) as *mut usize);
+            assert!(nr_memento <= NR_MAX_THREADS);
+            for tid in 1..nr_memento + 1 {
+                PMEMAllocator::set_root_filter::<M>(RootIdx::MementoStart as u64 + tid as u64);
+            }
+
+            for tid in 1..nr_memento + 1 {
+                PMEMAllocator::set_root_filter::<bool>(
+                    RootIdx::MementoClearingFlagStart as u64 + tid as u64,
+                );
+            }
+
             // Initialize shared volatile variables
             lazy_static::initialize(&BARRIER_WAIT);
             epoch::init();

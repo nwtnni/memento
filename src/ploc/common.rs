@@ -85,8 +85,8 @@ pub(crate) mod ordo {
         if cfg!(feature = "pmcheck") {
             Timestamp::from(1000) // On the top of jaaru, clock_offset() is too slow.
         } else {
-            let num_cpus = num_cpus::get();
-            let global_off = (0..num_cpus).combinations(2).fold(0, |off, c| {
+            let num_cpus = 40;
+            let global_off = (40..40 + num_cpus).combinations(2).fold(0, |off, c| {
                 off.max(clock_offset(c[0], c[1]).max(clock_offset(c[1], c[0])))
             });
             Timestamp::from(global_off)

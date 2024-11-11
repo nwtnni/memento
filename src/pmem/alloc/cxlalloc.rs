@@ -47,12 +47,7 @@ impl PAllocator for Cxlalloc {
     }
 
     unsafe fn get_root(i: u64) -> *mut libc::c_void {
-        unsafe extern "C" fn empty(
-            _: *mut cxlalloc_static::cxlalloc_set_t,
-            _: *mut std::ffi::c_void,
-        ) {
-        }
-        cxlalloc_static::cxlalloc_get_root(i as usize, empty)
+        cxlalloc_static::cxlalloc_get_root(i as usize)
     }
 
     unsafe fn malloc(sz: libc::c_ulong) -> *mut libc::c_void {

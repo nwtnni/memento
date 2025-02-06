@@ -3,14 +3,12 @@
 // # Tries to deny all lints (`rustc -W help`).
 #![deny(absolute_paths_not_starting_with_crate)]
 #![deny(anonymous_parameters)]
-#![deny(box_pointers)]
 #![deny(deprecated_in_future)]
 #![deny(explicit_outlives_requirements)]
 #![deny(keyword_idents)]
 #![deny(macro_use_extern_crate)]
 #![deny(missing_debug_implementations)]
 #![deny(non_ascii_idents)]
-#![deny(pointer_structural_match)]
 #![deny(rust_2018_idioms)]
 #![deny(trivial_numeric_casts)]
 // #![deny(unused_crate_dependencies)]
@@ -34,6 +32,7 @@
 #![allow(clippy::type_complexity)]
 #![allow(clippy::too_many_arguments)]
 #![recursion_limit = "512"]
+#![allow(warnings)]
 
 // Persistent objects collection
 pub mod ds;

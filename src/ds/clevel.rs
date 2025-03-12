@@ -11,10 +11,10 @@ use std::sync::atomic::AtomicUsize;
 use cfg_if::cfg_if;
 use crossbeam_epoch as epoch;
 use etrace::*;
-use fasthash::Murmur3HasherExt;
 use itertools::*;
 use libc::c_void;
 use mmt_derive::Collectable;
+use rapidhash::RapidHasher;
 use tinyvec::*;
 
 use crate::pepoch::atomic::cut_as_high_tag_len;
@@ -64,7 +64,7 @@ cfg_if! {
 }
 
 fn hashes<T: Hash>(t: &T) -> (u16, [u32; 2]) {
-    let mut hasher = Murmur3HasherExt::default();
+    let mut hasher = RapidHasher::default();
     t.hash(&mut hasher);
     let hash = hasher.finish() as usize;
 

@@ -32,7 +32,7 @@ tempfile = "3.3.0"
 array-init = "2.1.0"
 lazy_static = "1.4.0"
 itertools = "0.10.5"
-fasthash = "0.4.0"
+rapidhash = "1.4"
 cfg-if = "1.0.0"
 tinyvec = { version = "1.6.0", features = ["alloc", "rustc_1_40"] }
 libc = "0.2.138"

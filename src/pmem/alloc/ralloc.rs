@@ -23,9 +23,12 @@ extern "C" {
     /// If return is 1, the original file is opened, otherwise the file is newly created.
     pub(crate) fn RP_init(_id: *const c_char, size: u64) -> c_int;
 
-    pub(crate) fn RP_measure() -> usize;
+    pub(crate) fn RP_cache_count() -> usize;
+    pub(crate) fn RP_cache_size() -> usize;
 
     pub(crate) fn RP_gc();
+    pub(crate) fn RP_gc_count() -> usize;
+    pub(crate) fn RP_gc_time() -> usize;
 
     pub(crate) fn RP_invalidate();
 
@@ -121,8 +124,12 @@ impl PAllocator for RallocAllocator {
         RP_close();
     }
 
-    unsafe fn measure() -> usize {
-        RP_measure()
+    unsafe fn cache_count() -> usize {
+        RP_cache_count()
+    }
+
+    unsafe fn cache_size() -> usize {
+        RP_cache_size()
     }
 
     unsafe fn recover() -> libc::c_int {
@@ -181,6 +188,14 @@ impl PAllocator for RallocAllocator {
 
     unsafe fn gc() {
         RP_gc();
+    }
+
+    unsafe fn gc_count() -> usize {
+        RP_gc_count()
+    }
+
+    unsafe fn gc_time() -> usize {
+        RP_gc_time()
     }
 
     unsafe fn invalidate() {

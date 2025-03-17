@@ -32,7 +32,11 @@ impl PAllocator for Cxlalloc {
 
     unsafe fn close(_start: usize, _len: usize) {}
 
-    unsafe fn measure() -> usize {
+    unsafe fn cache_count() -> usize {
+        0
+    }
+
+    unsafe fn cache_size() -> usize {
         0
     }
 
@@ -74,6 +78,14 @@ impl PAllocator for Cxlalloc {
     }
 
     unsafe fn gc() {}
+
+    unsafe fn gc_count() -> usize {
+        0
+    }
+
+    unsafe fn gc_time() -> usize {
+        0
+    }
 
     unsafe fn invalidate() {}
 }

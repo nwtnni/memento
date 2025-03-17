@@ -303,6 +303,9 @@ public:
     std::stack<std::pair<char*, size_t>> to_filter_node;
     std::stack<std::function<void(char*, size_t, GarbageCollection& gc)>> to_filter_func;
 
+    static size_t count;
+    static size_t time;
+
     GarbageCollection():marked_blk(){};
 
     void operator() ();
@@ -450,14 +453,17 @@ private:
     // func on size class
     size_t get_sizeclass(size_t size);
     SizeClassData* get_sizeclass(ProcHeap* h);
-    SizeClassData* get_sizeclass_by_idx(size_t idx);
     // compute block index in superblock by addr to sb, block, and sc index
     uint32_t compute_idx(char* superblock, char* block, size_t sc_idx);
 
     // func on cache
     void fill_cache(size_t sc_idx, TCacheBin* cache);
 public:
-    size_t measure_cache(size_t sc_idx, TCacheBin* cache);
+    // used for getting thread-local cache statistics
+    SizeClassData* get_sizeclass_by_idx(size_t idx);
+    size_t cache_count(size_t sc_idx, TCacheBin* cache);
+    size_t cache_size(size_t sc_idx, TCacheBin* cache);
+
     // we need to call this function to flush TLS cache during exit
     void flush_cache(size_t sc_idx, TCacheBin* cache);
     // find desc of the block

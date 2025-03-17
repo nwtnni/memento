@@ -332,7 +332,13 @@ void BaseMeta::fill_cache(size_t sc_idx, TCacheBin *cache) {
   assert(block_num <= sc->cache_block_num);
 }
 
-size_t BaseMeta::measure_cache(size_t sc_idx, TCacheBin *cache) {
+size_t BaseMeta::cache_count(size_t sc_idx, TCacheBin *cache) {
+  SizeClassData *sc = get_sizeclass_by_idx(sc_idx);
+  uint32_t const block_size = sc->block_size;
+  return cache->get_block_num();
+}
+
+size_t BaseMeta::cache_size(size_t sc_idx, TCacheBin *cache) {
   SizeClassData *sc = get_sizeclass_by_idx(sc_idx);
   uint32_t const block_size = sc->block_size;
   return cache->get_block_num() * block_size;
@@ -792,7 +798,8 @@ void GarbageCollection::operator()() {
     func(node.first, node.second, *this);
   }
   // printf("Done!\nReachable blocks = %lu\n", marked_blk.size());
-  printf("GC_COUNT:%lu\n", marked_blk.size());
+  // printf("GC_COUNT:%lu\n", marked_blk.size());
+  GarbageCollection::count += marked_blk.size();
 
   // Step 2: sweep phase, update variables.
   // printf("Reconstructing metadata...");
@@ -913,7 +920,8 @@ void GarbageCollection::operator()() {
   auto stop = high_resolution_clock::now();
   assert(curr_marked_blk == marked_blk.end());
   auto duration = duration_cast<microseconds>(stop - start);
-  cout << "GC_TIME:" << duration.count() << endl;
+  // cout << "GC_TIME:" << duration.count() << endl;
+  GarbageCollection::time += duration.count();
 
   // printf("Flushing recovered data...");
   _rgs->flush_region(DESC_IDX);

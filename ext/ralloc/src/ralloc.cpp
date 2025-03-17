@@ -98,15 +98,26 @@ int RP_init(const char *_id, uint64_t size) {
   return _holder->init_ret_val;
 }
 
-size_t RP_measure() {
+size_t RP_cache_size() {
   size_t total = 0;
   for (int i = 1; i < MAX_SZ_IDX; i++) { // sc 0 is reserved.
-    total += base_md->measure_cache(i, &t_caches.t_cache[i]);
+    SizeClassData *sc = base_md->get_sizeclass_by_idx(i);
+    uint32_t const block_size = sc->block_size;
+    total += t_caches.t_cache[i].get_block_num();
+  }
+  return total;
+}
+size_t RP_cache_count() {
+  size_t total = 0;
+  for (int i = 1; i < MAX_SZ_IDX; i++) { // sc 0 is reserved.
+    total += t_caches.t_cache[i].get_block_num();
   }
   return total;
 }
 
 void RP_gc() { base_md->gc(); }
+size_t RP_gc_count() { return GarbageCollection::count; }
+size_t RP_gc_time() { return GarbageCollection::time; }
 
 void RP_invalidate() { t_caches = TCaches(); }
 

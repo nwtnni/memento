@@ -33,8 +33,14 @@ void *RP_get_root_c(uint64_t i);
 int RP_init(const char *_id, uint64_t size);
 #endif
 
-size_t RP_measure();
+size_t RP_cache_count();
+size_t RP_cache_size();
+
 void RP_gc();
+
+size_t RP_gc_count();
+size_t RP_gc_time();
+
 void RP_invalidate();
 
 /* return 1 if it's dirty, otherwise 0. */

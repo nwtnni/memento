@@ -53,17 +53,17 @@
 // mmap file
 void RegionManager::__map_persistent_region() {
   DBG_PRINT("Creating a new persistent region...\n");
-  // int fd;
-  // fd = open(HEAPFILE.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-  //
-  // FD = fd;
-  // off_t offt = lseek(fd, FILESIZE - 1, SEEK_SET);
-  // assert(offt != -1);
-  //
-  // int result = write(fd, "", 1);
-  // assert(result != -1);
+  int fd;
+  fd = open(HEAPFILE.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 
-  void *addr = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+  FD = fd;
+  off_t offt = lseek(fd, FILESIZE - 1, SEEK_SET);
+  assert(offt != -1);
+
+  int result = write(fd, "", 1);
+  assert(result != -1);
+
+  void *addr = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MMAP_FLAG, fd, 0);
   assert(addr != MAP_FAILED);
 
   if (const char *numa = std::getenv("CXL_NUMA_NODE")) {
@@ -93,21 +93,21 @@ void RegionManager::__map_persistent_region() {
   DBG_PRINT("Current_addr: %p\n", curr_addr_ptr->load());
 }
 void RegionManager::__remap_persistent_region() {
-  // DBG_PRINT("Remapping the persistent region...\n");
-  // int fd;
-  // fd = open(HEAPFILE.c_str(), O_RDWR, S_IRUSR | S_IWUSR);
-  //
-  // FD = fd;
-  // off_t offt = lseek(fd, FILESIZE - 1, SEEK_SET);
-  // assert(offt != -1);
-  //
-  // int result = write(fd, "", 1);
-  // assert(result != -1);
-  //
-  // offt = lseek(fd, 0, SEEK_SET);
-  // assert(offt == 0);
+  DBG_PRINT("Remapping the persistent region...\n");
+  int fd;
+  fd = open(HEAPFILE.c_str(), O_RDWR, S_IRUSR | S_IWUSR);
 
-  void *addr = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+  FD = fd;
+  off_t offt = lseek(fd, FILESIZE - 1, SEEK_SET);
+  assert(offt != -1);
+
+  int result = write(fd, "", 1);
+  assert(result != -1);
+
+  offt = lseek(fd, 0, SEEK_SET);
+  assert(offt == 0);
+
+  void *addr = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MMAP_FLAG, fd, 0);
   assert(addr != MAP_FAILED);
 
   if (const char *numa = std::getenv("CXL_NUMA_NODE")) {

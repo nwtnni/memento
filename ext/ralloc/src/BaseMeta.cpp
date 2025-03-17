@@ -15,6 +15,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <stdio.h>
 #include <string>
 
 #include "BaseMeta.hpp"
@@ -811,35 +812,34 @@ void GarbageCollection::operator()() {
     // go through all curr_marked_blk that's in this sb
     // fix bug(@anonymous): we should calculate sb using relativae address, not
     // absolute address
-    while (curr_marked_blk != marked_blk.end() &&
-           ((uint64_t)(_rgs->untranslate(SB_IDX, curr_sb)) >> SB_SHIFT) ==
-               ((uint64_t)(_rgs->untranslate(SB_IDX, *curr_marked_blk)) >>
-                SB_SHIFT)) {
-      // curr_marked_blk doesn't reach the end of marked_blk and curr_marked_blk
-      // is in curr_sb
+    while (curr_marked_blk != marked_blk.end()) {
 
-      if (curr_desc->heap != nullptr && curr_desc->superblock == curr_sb) {
-        // false positive shouldn't enter here
-        if (curr_desc->heap->sc_idx == 0) {
-          // large sb that's in use
-          // assert((*curr_marked_blk) == curr_sb); //allow large sb
-          // to be pointed at in the middle
-          assert(curr_desc->maxcount == 1);
-          anchor.state = SB_FULL; // set it as full
-        } else {
-          // small sb that's in use
-          anchor.state = SB_PARTIAL;
-          for (char *free_block = last_possible_free_block;
-               free_block < (*curr_marked_blk);
-               free_block += curr_desc->block_size) {
-            // put last_possible_free_block...(curr_marked_blk-1) to free blk
-            // list
-            (*reinterpret_cast<pptr<char> *>(free_block)) = free_blocks_head;
-            free_blocks_head = free_block;
-            anchor.count++;
-          }
-          last_possible_free_block = (*curr_marked_blk) + curr_desc->block_size;
+      // large sb that's in use
+      // to be pointed at in the middle
+      if (curr_desc->heap->sc_idx == 0 && *curr_marked_blk >= curr_sb &&
+          *curr_marked_blk < curr_sb + curr_desc->block_size) {
+
+        assert(curr_desc->maxcount == 1);
+        anchor.state = SB_FULL; // set it as full
+
+        // small sb that's in use
+        // curr_marked_blk doesn't reach the end of marked_blk and
+        // curr_marked_blk is in curr_sb
+      } else if (curr_desc->heap->sc_idx != 0 && *curr_marked_blk >= curr_sb &&
+                 *curr_marked_blk < curr_sb + SBSIZE) {
+        anchor.state = SB_PARTIAL;
+        for (char *free_block = last_possible_free_block;
+             free_block < (*curr_marked_blk);
+             free_block += curr_desc->block_size) {
+          // put last_possible_free_block...(curr_marked_blk-1) to free blk
+          // list
+          (*reinterpret_cast<pptr<char> *>(free_block)) = free_blocks_head;
+          free_blocks_head = free_block;
+          anchor.count++;
         }
+        last_possible_free_block = (*curr_marked_blk) + curr_desc->block_size;
+      } else {
+        break;
       }
       curr_marked_blk++;
     }

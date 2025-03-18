@@ -35,7 +35,8 @@ impl PAllocator for Cxlalloc {
                 })),
             CStr::from_ptr(filepath)
                 .to_str()
-                .expect("Expected UTF-8 filepath"),
+                .expect("Expected UTF-8 filepath")
+                .trim_start_matches("/dev/shm"),
         );
         (!cxlalloc_global::is_clean()) as libc::c_int
     }

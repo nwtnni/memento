@@ -3,7 +3,7 @@ use super::{pool::PoolHandle, Collectable, GarbageCollection};
 use std::marker::PhantomData;
 
 /// NULL identifier of relative address
-const NULL_OFFSET: usize = if cfg!(feature = "cxlalloc") { 1 } else { 0 };
+const NULL_OFFSET: usize = 0;
 
 /// Pointer to an object belonging to the pool
 /// - It has an offset from the starting address of the pool.

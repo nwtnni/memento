@@ -238,12 +238,8 @@ pub mod tests {
 
     /// run test op
     #[allow(box_pointers)]
-    pub fn run_test<O, M>(
-        pool_name: &str,
-        pool_len: usize,
-        nr_memento: usize,
-        nr_count: usize,
-    ) where
+    pub fn run_test<O, M>(pool_name: &str, pool_len: usize, nr_memento: usize, nr_count: usize)
+    where
         O: RootObj<M> + Send + Sync + 'static,
         M: Memento + Send + Sync,
     {

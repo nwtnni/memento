@@ -136,7 +136,7 @@ impl_left_bits!(tid_bits, POS_TID_BITS, NR_TID_BITS, usize);
 
 // high bits: 0b0000000000011111111111111000000000000000000000000000000000000000 in 64-bit
 const POS_HIGH_BITS: u32 = POS_TID_BITS + NR_TID_BITS;
-const NR_HIGH_BITS: u32 = 14;
+const NR_HIGH_BITS: u32 = 11;
 impl_left_bits!(high_bits, POS_HIGH_BITS, NR_HIGH_BITS, usize);
 
 /// Cut as the length of high tag

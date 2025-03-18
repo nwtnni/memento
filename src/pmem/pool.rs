@@ -249,7 +249,8 @@ impl PoolHandle {
     /// check if the `raw` addr is in range of pool
     #[inline]
     pub fn valid(&self, raw: usize) -> bool {
-        raw >= self.start() && raw < self.end()
+        raw >= self.start()
+        // && raw < self.end()
     }
 }
 

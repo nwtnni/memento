@@ -49,8 +49,14 @@ pub trait PAllocator {
     unsafe fn mmapped_addr() -> usize;
     unsafe fn close(start: usize, len: usize);
     unsafe fn recover() -> c_int;
-    unsafe fn measure() -> usize;
+
+    unsafe fn cache_count() -> usize;
+    unsafe fn cache_size() -> usize;
+
     unsafe fn gc();
+    unsafe fn gc_count() -> usize;
+    unsafe fn gc_time() -> usize;
+
     unsafe fn invalidate();
     unsafe fn init_thread(tid: usize);
 

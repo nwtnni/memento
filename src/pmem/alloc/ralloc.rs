@@ -116,6 +116,7 @@ impl PAllocator for RallocAllocator {
         RP_init(filepath, filesize)
     }
 
+    #[inline]
     unsafe fn mmapped_addr() -> usize {
         RP_mmapped_addr()
     }
@@ -124,34 +125,42 @@ impl PAllocator for RallocAllocator {
         RP_close();
     }
 
+    #[inline]
     unsafe fn cache_count() -> usize {
         RP_cache_count()
     }
 
+    #[inline]
     unsafe fn cache_size() -> usize {
         RP_cache_size()
     }
 
+    #[inline]
     unsafe fn recover() -> libc::c_int {
         RP_recover()
     }
 
+    #[inline]
     unsafe fn set_root(ptr: *mut libc::c_void, i: u64) -> *mut libc::c_void {
         RP_set_root(ptr, i)
     }
 
+    #[inline]
     unsafe fn get_root(i: u64) -> *mut libc::c_void {
         RP_get_root_c(i)
     }
 
+    #[inline]
     unsafe fn malloc(sz: libc::c_ulong) -> *mut libc::c_void {
         RP_malloc(sz)
     }
 
+    #[inline]
     unsafe fn free(ptr: *mut libc::c_void, _len: usize) {
         RP_free(ptr)
     }
 
+    #[inline]
     unsafe fn set_root_filter<T: Collectable>(i: u64) {
         unsafe extern "C" fn root_filter<T: Collectable>(
             ptr: *mut c_char,
@@ -169,11 +178,13 @@ impl PAllocator for RallocAllocator {
         RP_set_root_filter(Some(root_filter::<T>), i)
     }
 
+    #[inline]
     unsafe fn mark<T: Collectable>(s: &mut T, tid: usize, gc: &mut super::GarbageCollection) {
         let ptr = s as *mut _ as *mut c_char;
         unsafe { RP_mark(gc, ptr, tid, Some(T::filter_inner)) };
     }
 
+    #[inline]
     unsafe extern "C" fn filter_inner<T: Collectable>(
         ptr: *mut T,
         tid: usize,
@@ -184,20 +195,25 @@ impl PAllocator for RallocAllocator {
         T::filter(ptr.as_mut().unwrap(), tid, gc, pool);
     }
 
+    #[inline]
     unsafe fn init_thread(_: usize) {}
 
+    #[inline]
     unsafe fn gc() {
         RP_gc();
     }
 
+    #[inline]
     unsafe fn gc_count() -> usize {
         RP_gc_count()
     }
 
+    #[inline]
     unsafe fn gc_time() -> usize {
         RP_gc_time()
     }
 
+    #[inline]
     unsafe fn invalidate() {
         RP_invalidate();
     }

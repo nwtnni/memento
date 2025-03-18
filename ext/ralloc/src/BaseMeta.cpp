@@ -823,14 +823,17 @@ void GarbageCollection::operator()() {
     // fix bug(@anonymous): we should calculate sb using relativae address, not
     // absolute address
     while (curr_marked_blk != marked_blk.end()) {
+      if (curr_desc->heap == nullptr || curr_desc->superblock != curr_sb) {
+        break;
 
-      // large sb that's in use
-      // to be pointed at in the middle
-      if (curr_desc->heap->sc_idx == 0 && *curr_marked_blk >= curr_sb &&
-          *curr_marked_blk < curr_sb + curr_desc->block_size) {
+        // large sb that's in use
+        // to be pointed at in the middle
+      } else if (curr_desc->heap->sc_idx == 0 && *curr_marked_blk >= curr_sb &&
+                 *curr_marked_blk < curr_sb + curr_desc->block_size) {
 
         assert(curr_desc->maxcount == 1);
         anchor.state = SB_FULL; // set it as full
+        curr_marked_blk++;
 
         // small sb that's in use
         // curr_marked_blk doesn't reach the end of marked_blk and
@@ -848,10 +851,10 @@ void GarbageCollection::operator()() {
           anchor.count++;
         }
         last_possible_free_block = (*curr_marked_blk) + curr_desc->block_size;
+        curr_marked_blk++;
       } else {
         break;
       }
-      curr_marked_blk++;
     }
     if (anchor.state == SB_EMPTY) {
       // curr_sb isn't in use

@@ -162,7 +162,7 @@ impl PoolHandle {
                             break;
                         }
 
-                        println!("[pool::execute] Thread {tid} re-executed.");
+                        eprintln!("[pool::execute] Thread {tid} re-executed.");
                     }
                 });
                 let _ = h.join();

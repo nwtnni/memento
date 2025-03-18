@@ -101,7 +101,7 @@ int RP_init(const char *_id, uint64_t size) {
 size_t RP_cache_size() {
   size_t total = 0;
   for (int i = 1; i < MAX_SZ_IDX; i++) { // sc 0 is reserved.
-    SizeClassData *sc = base_md->get_sizeclass_by_idx(i);
+    SizeClassData *sc = sizeclass.get_sizeclass_by_idx_noinline(i);
     uint32_t const block_size = sc->block_size;
     total += t_caches.t_cache[i].get_block_num();
   }

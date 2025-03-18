@@ -59,6 +59,7 @@ public:
 	SizeClass();
 	inline size_t get_sizeclass(size_t size){return sizeclass_lookup[size];}
 	inline SizeClassData* get_sizeclass_by_idx(size_t idx){return &sizeclasses[idx];}
+	SizeClassData* get_sizeclass_by_idx_noinline(size_t idx){return &sizeclasses[idx];}
 };
 namespace ralloc{
 	extern SizeClass sizeclass;

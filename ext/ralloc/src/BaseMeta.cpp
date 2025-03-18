@@ -761,6 +761,9 @@ void ralloc::public_flush_cache() {
   }
 }
 
+size_t GarbageCollection::count = 0;
+size_t GarbageCollection::time = 0;
+
 /*
  * function GarbageCollection::operator()
  *

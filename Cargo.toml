@@ -27,6 +27,7 @@ crossbeam-channel = { path = "./crossbeam-persistency/crossbeam-channel" }
 cxlalloc-static = { path = "../../cxlalloc-static", features = ["backend-shm"] }
 
 atomic = "0.5"
+core_affinity = "0.8"
 etrace = "1.1.1"
 tempfile = "3.3.0"
 array-init = "2.1.0"
@@ -36,7 +37,6 @@ rapidhash = "1.4"
 cfg-if = "1.0.0"
 tinyvec = { version = "1.6.0", features = ["alloc", "rustc_1_40"] }
 libc = "0.2.138"
-num_cpus = "1.14.0"
 
 [dev-dependencies]
 log = "0.4.17"

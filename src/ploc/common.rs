@@ -21,6 +21,7 @@ pub(crate) mod ordo {
         },
     };
 
+    use core_affinity::CoreId;
     use itertools::Itertools;
     use libc::{cpu_set_t, sched_setaffinity, CPU_SET, CPU_ZERO};
 
@@ -30,17 +31,8 @@ pub(crate) mod ordo {
         test_utils::thread,
     };
 
-    fn set_affinity(c: usize) {
-        unsafe {
-            let mut cpuset = MaybeUninit::<cpu_set_t>::zeroed().assume_init();
-            CPU_ZERO(&mut cpuset);
-            CPU_SET(c, &mut cpuset);
-            assert!(sched_setaffinity(0, size_of::<cpu_set_t>(), &cpuset as *const _) >= 0);
-        }
-    }
-
     // TODO: sched_setscheduler(getpid(), SCHED_FIFO, param)
-    fn clock_offset(c0: usize, c1: usize) -> u64 {
+    fn clock_offset(c0: CoreId, c1: CoreId) -> u64 {
         const RUNS: usize = 100;
 
         let clock = AtomicU64::new(1);
@@ -49,7 +41,7 @@ pub(crate) mod ordo {
         let bar1 = Arc::clone(&bar0);
 
         let h1 = thread::spawn(move || {
-            set_affinity(c1);
+            assert!(core_affinity::set_for_current(c1));
             for _ in 0..RUNS {
                 while clock_ref.load(Ordering::SeqCst) != 0 {
                     lfence();
@@ -59,7 +51,7 @@ pub(crate) mod ordo {
             }
         });
         let h0 = thread::spawn(move || {
-            set_affinity(c0);
+            assert!(core_affinity::set_for_current(c0));
             let mut min = u64::MAX;
             for _ in 0..RUNS {
                 clock_ref.store(0, Ordering::SeqCst);
@@ -85,8 +77,8 @@ pub(crate) mod ordo {
         if cfg!(feature = "pmcheck") {
             Timestamp::from(1000) // On the top of jaaru, clock_offset() is too slow.
         } else {
-            let num_cpus = std::thread::available_parallelism().unwrap().get();
-            let global_off = (0..num_cpus).combinations(2).fold(0, |off, c| {
+            let cores = core_affinity::get_core_ids().unwrap();
+            let global_off = cores.into_iter().combinations(2).fold(0, |off, c| {
                 off.max(clock_offset(c[0], c[1]).max(clock_offset(c[1], c[0])))
             });
             Timestamp::from(global_off)

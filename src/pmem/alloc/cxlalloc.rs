@@ -24,15 +24,15 @@ pub struct Cxlalloc {}
 impl PAllocator for Cxlalloc {
     unsafe fn open(filepath: *const libc::c_char, filesize: u64) -> libc::c_int {
         cxlalloc_global::initialize_process(
-            cxlalloc::raw::Builder::default()
+            cxlalloc_global::Builder::default()
                 .size_small(filesize as usize / 2)
                 .size_large(filesize as usize / 2)
-                .backend(cxlalloc::raw::Backend::Shm(cxlalloc::raw::backend::Shm {
+                .backend(cxlalloc_global::backend::Shm {
                     numa: env::var("CXL_NUMA_NODE")
                         .ok()
                         .and_then(|numa| numa.parse::<usize>().ok()),
                     populate: false,
-                })),
+                }),
             CStr::from_ptr(filepath)
                 .to_str()
                 .expect("Expected UTF-8 filepath")

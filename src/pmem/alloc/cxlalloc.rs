@@ -24,7 +24,7 @@ pub struct Cxlalloc {}
 impl PAllocator for Cxlalloc {
     unsafe fn open(filepath: *const libc::c_char, filesize: u64) -> libc::c_int {
         cxlalloc_global::initialize_process(
-            cxlalloc_global::Builder::default()
+            cxlalloc_global::Raw::builder()
                 .size_small(filesize as usize / 2)
                 .size_large(filesize as usize / 2)
                 .backend(cxlalloc_global::backend::Shm {

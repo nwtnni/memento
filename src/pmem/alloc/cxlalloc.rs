@@ -27,12 +27,17 @@ impl PAllocator for Cxlalloc {
             cxlalloc_global::Raw::builder()
                 .size_small(filesize as usize / 2)
                 .size_large(filesize as usize / 2)
-                .backend(cxlalloc_global::backend::Shm {
-                    numa: env::var("CXL_NUMA_NODE")
-                        .ok()
-                        .and_then(|numa| numa.parse::<usize>().ok()),
-                    populate: false,
-                }),
+                .backend(
+                    cxlalloc_global::backend::Backend::builder()
+                        .kind(cxlalloc_global::backend::Shm)
+                        .maybe_numa(
+                            env::var("CXL_NUMA_NODE")
+                                .ok()
+                                .and_then(|numa| numa.parse::<usize>().ok())
+                                .map(|node| cxlalloc_global::backend::Numa::Bind { node }),
+                        )
+                        .build(),
+                ),
             CStr::from_ptr(filepath)
                 .to_str()
                 .expect("Expected UTF-8 filepath")
